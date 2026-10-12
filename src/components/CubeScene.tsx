@@ -5,8 +5,10 @@ import {
   CUBE_FACE_NORMALS,
   CUBE_FACE_PRESETS,
   CUBE_FACE_UP,
+  MODES,
   type Mode,
 } from '../constants'
+import { useTimerStore } from '../stores/timerStore'
 import { formatTime } from '../utils'
 
 function drawSideLabel(canvas: HTMLCanvasElement, minutes: number) {
@@ -59,29 +61,20 @@ function drawDisplay(canvas: HTMLCanvasElement, seconds: number, progress: numbe
   context.fillText(mode === 'focus' ? 'FÓKUSZ' : 'SZÜNET', 256, 332)
 }
 
-type CubeSceneProps = {
-  mode: Mode
-  seconds: number
-  progress: number
-  selectedMinutes: number
-  onPresetSelect: (minutes: number) => void
-}
-
-export function CubeScene({
-  mode,
-  seconds,
-  progress,
-  selectedMinutes,
-  onPresetSelect,
-}: CubeSceneProps) {
+export function CubeScene() {
+  const mode = useTimerStore((state) => state.mode)
+  const seconds = useTimerStore((state) => state.secondsLeft)
+  const customDuration = useTimerStore((state) => state.customDuration)
+  const selectDuration = useTimerStore((state) => state.selectDuration)
+  const duration = customDuration ?? MODES[mode].duration
+  const progress = 1 - seconds / duration
+  const selectedMinutes = Math.round(duration / 60)
   const mountRef = useRef<HTMLDivElement>(null)
   const displayRef = useRef({ mode, seconds, progress, selectedMinutes })
-  const presetSelectRef = useRef(onPresetSelect)
 
   useEffect(() => {
     displayRef.current = { mode, seconds, progress, selectedMinutes }
-    presetSelectRef.current = onPresetSelect
-  }, [mode, onPresetSelect, progress, seconds, selectedMinutes])
+  }, [mode, progress, seconds, selectedMinutes])
 
   useEffect(() => {
     const mount = mountRef.current
@@ -220,7 +213,7 @@ export function CubeScene({
       const selectedPreset = CUBE_FACE_PRESETS[selectedFace]
       previousSelection = selectedPreset
       snapToFace(selectedFace)
-      presetSelectRef.current(selectedPreset)
+      selectDuration(selectedPreset)
     }
 
     renderer.domElement.addEventListener('pointerdown', onPointerDown)
@@ -299,7 +292,7 @@ export function CubeScene({
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [])
+  }, [selectDuration])
 
   return <div className="cube-canvas" ref={mountRef} />
 }

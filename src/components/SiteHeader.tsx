@@ -1,8 +1,8 @@
-type SiteHeaderProps = {
-  onHelp: () => void
-}
+import { useTimerStore } from '../stores/timerStore'
 
-export function SiteHeader({ onHelp }: SiteHeaderProps) {
+export function SiteHeader() {
+  const setNotice = useTimerStore((state) => state.setNotice)
+
   return (
     <header className="topbar">
       <a className="brand" href="#" aria-label="Little Timer – főoldal">
@@ -10,7 +10,7 @@ export function SiteHeader({ onHelp }: SiteHeaderProps) {
         <span>little<span className="brand-light">timer</span></span>
       </a>
       <span className="topbar-note"><span className="status-dot" /> Egy kis segítség az elmélyült munkához</span>
-      <button className="help-button" onClick={onHelp}>
+      <button className="help-button" onClick={() => setNotice('A kockát elforgatva választhatsz időtartamot.')}>
         Használat <span aria-hidden="true">?</span>
       </button>
     </header>
