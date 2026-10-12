@@ -1,7 +1,5 @@
-const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+import PomodoroCube from './PomodoroCube'
 
-export default App
+export default function App() {
+  return <PomodoroCube />
+}
