@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+
+:root {
+  --accent: #f08a6b;
+  color-scheme: dark;
+}
+
+[data-period='focus'] {
+  --accent: #f08a6b;
+}
+
+[data-period='shortBreak'] {
+  --accent: #7ee0c6;
+}
+
+[data-period='longBreak'] {
+  --accent: #9db4ff;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+  background: #090b10;
+  color: #f4f1ec;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.app-shell {
+  background:
+    radial-gradient(circle at 50% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
+    radial-gradient(circle at 80% 110%, rgb(80 102 170 / 0.18), transparent 36%),
+    linear-gradient(180deg, #12141c 0%, #090b10 48%, #07080c 100%);
+  transition: background-color 500ms ease;
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+.font-mono,
+.tabular-nums {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+dialog::backdrop {
+  background: rgb(4 6 10 / 0.72);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
