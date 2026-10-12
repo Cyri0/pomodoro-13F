@@ -25,9 +25,7 @@ export function CubeFace({ faceIndex, minutes, isActive, rotationZ, timer }: Cub
         </>
       ) : (
         <div className="face-content" style={{ transform: `rotateZ(${-rotationZ}deg)` }}>
-          <span className="face-screen-label">LIVE TIMER</span>
           {timer}
-          <span className="face-category">{presentation.category}</span>
         </div>
       )}
       <span className="face-marker" aria-hidden="true"><i /><i /><i /></span>
