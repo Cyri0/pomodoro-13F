@@ -1,7 +1,9 @@
-const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+import { TimerCube } from "./components/TimerCube";
 
-export default App
+const App = () => (
+  <main className="app">
+    <TimerCube />
+  </main>
+);
+
+export default App;
