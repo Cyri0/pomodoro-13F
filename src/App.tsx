@@ -2,15 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 const PRESETS = [5, 10, 30, 60]
 
-const CUBE_FACES = [
-  { key: 'front', label: '5 min', minutes: 5, transform: 'rotateY(0deg) translateZ(120px)' },
-  { key: 'right', label: '10 min', minutes: 10, transform: 'rotateY(90deg) translateZ(120px)' },
-  { key: 'back', label: '30 min', minutes: 30, transform: 'rotateY(180deg) translateZ(120px)' },
-  { key: 'left', label: '60 min', minutes: 60, transform: 'rotateY(-90deg) translateZ(120px)' },
-  { key: 'top', label: 'Focus', minutes: 0, transform: 'rotateX(90deg) translateZ(120px)' },
-  { key: 'bottom', label: 'Timer', minutes: 0, transform: 'rotateX(-90deg) translateZ(120px)' },
-] as const
-
 const formatTime = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = totalSeconds % 60
@@ -18,53 +9,25 @@ const formatTime = (totalSeconds: number) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-const rotateVector = (vector: { x: number; y: number; z: number }, rotationX: number, rotationY: number) => {
-  const rx = (rotationX * Math.PI) / 180
-  const ry = (rotationY * Math.PI) / 180
-
-  const cosY = Math.cos(ry)
-  const sinY = Math.sin(ry)
-  const x1 = vector.x * cosY + vector.z * sinY
-  const z1 = -vector.x * sinY + vector.z * cosY
-
-  const cosX = Math.cos(rx)
-  const sinX = Math.sin(rx)
-  const y2 = vector.y * cosX - z1 * sinX
-  const z2 = vector.y * sinX + z1 * cosX
-  //ezt az egesz kodot az ai irta es en csak bemasolom, hogy mukodjon a 3d kocka, de nem ertem a matekot benne. btw meleg vagyok
-
-  return { x: x1, y: y2, z: z2 }
-}
-
 const getActivePresetIndex = (rotationX: number, rotationY: number) => {
-  const faces = [
-    { index: 0, normal: { x: 0, y: 0, z: 1 } },
-    { index: 1, normal: { x: 1, y: 0, z: 0 } },
-    { index: 2, normal: { x: 0, y: 0, z: -1 } },
-    { index: 3, normal: { x: -1, y: 0, z: 0 } },
-  ]
+  const normalizedY = ((rotationY % 360) + 360) % 360
+  const normalizedX = ((rotationX % 360) + 360) % 360
 
-  let bestIndex = 0
-  let bestScore = -Infinity
+  if (normalizedX > 180) {
+    return 3
+  }
 
-  faces.forEach(({ index, normal }) => {
-    const rotated = rotateVector(normal, rotationX, rotationY)
-    const score = rotated.z - Math.abs(rotated.x) * 0.35 - Math.abs(rotated.y) * 0.2
-
-    if (score > bestScore) {
-      bestScore = score
-      bestIndex = index
-    }
-  })
-
-  return bestIndex
+  if (normalizedY < 90) return 0
+  if (normalizedY < 180) return 1
+  if (normalizedY < 270) return 2
+  return 3
 }
 
 const App = () => {
   const [timeLeft, setTimeLeft] = useState(PRESETS[0] * 60)
   const [isRunning, setIsRunning] = useState(false)
-  const [rotationY, setRotationY] = useState(-45)
-  const [rotationX, setRotationX] = useState(18)
+  const [rotationY, setRotationY] = useState(0)
+  const [rotationX, setRotationX] = useState(-18)
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef<{ x: number; y: number; rotationY: number; rotationX: number } | null>(null)
 
@@ -98,7 +61,7 @@ const App = () => {
     }
   }, [isRunning])
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
     dragStart.current = {
       x: event.clientX,
       y: event.clientY,
@@ -109,7 +72,7 @@ const App = () => {
     event.currentTarget.setPointerCapture(event.pointerId)
   }
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
     if (!dragStart.current) {
       return
     }
@@ -121,7 +84,7 @@ const App = () => {
     setRotationX(Math.max(-90, Math.min(90, dragStart.current.rotationX - deltaY * 0.9)))
   }
 
-  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = (event: React.PointerEvent<HTMLButtonElement>) => {
     if (!dragStart.current) {
       return
     }
@@ -144,54 +107,50 @@ const App = () => {
     setTimeLeft(selectedMinutes * 60)
   }
 
-  const getFaceTime = (minutes: number) => {
-    if (minutes === selectedMinutes) {
-      return formatTime(timeLeft)
-    }
-
-    return formatTime(minutes * 60)
+  const getDisplayValue = () => {
+    if (selectedMinutes === 5) return '5 min'
+    if (selectedMinutes === 10) return '10 min'
+    if (selectedMinutes === 30) return '30 min'
+    return '60 min'
   }
 
   return (
     <main className="app-shell">
+      <div className="emoji-rain" aria-hidden="true">
+        {['✨', '🌈', '🎉', '🔥', '🚀', '💫', '🌟', '🪩', '🎊', '⚡', '🌙', '🎵'].map((emoji, index) => (
+          <span key={`${emoji}-${index}`} style={{ '--i': index } as React.CSSProperties}>{emoji}</span>
+        ))}
+      </div>
+      <div className="dance-crew" aria-hidden="true">
+        <span>🕺🏿</span>
+        <span>💃🏿</span>
+        <span>🕺🏾</span>
+        <span>💃🏾</span>
+        <span>🙆🏿‍♀️</span>
+        <span>🕴🏿</span>
+        <span>🙋🏾‍♂️</span>
+        <span>💃🏿</span>
+      </div>
+
       <div className="timer-card">
         <div className="timer-header">
           <span className="eyebrow">Pomodoro</span>
-          <h1>3D focus cube</h1>
+          <h1>rainbow triangle</h1>
         </div>
 
-        <div className="cube-panel">
-          <div
-            className="cube-stage"
+        <div className="button-panel">
+          <button
+            type="button"
+            className={`timer-button ${isDragging ? 'dragging' : ''}`}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
+            style={{ transform: `rotateX(${rotationX}deg) rotateY(${rotationY}deg)` }}
           >
-            <div
-              className={`cube ${isDragging ? 'dragging' : ''}`}
-              style={{ transform: `rotateX(${rotationX}deg) rotateY(${rotationY}deg)` }}
-            >
-              {CUBE_FACES.map((face, index) => {
-                const isTimerFace = index < PRESETS.length
-                const isActive = activeIndex === index
-
-                return (
-                  <div
-                    key={face.key}
-                    className={`cube-face ${isActive ? 'active' : ''}`}
-                    style={{ transform: face.transform }}
-                  >
-                    <span className="face-label">{isTimerFace ? `${face.minutes} min` : face.label}</span>
-                    <strong className="face-time">
-                      {isTimerFace ? getFaceTime(face.minutes) : face.label}
-                    </strong>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
+            <span className="duration-label">{getDisplayValue()}</span>
+            <strong className="duration-time">{formatTime(timeLeft)}</strong>
+          </button>
           <p className="drag-hint">drag to rotate</p>
         </div>
 
