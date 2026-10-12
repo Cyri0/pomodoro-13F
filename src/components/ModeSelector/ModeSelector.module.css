@@ -1,0 +1,26 @@
+.introBlock { min-width: 0; align-self: center; padding-bottom: 14px; animation: rise-in .7s both; }
+.eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px; color: #9a7962; margin: 0 0 17px; }
+.heading { font-size: clamp(38px, 4vw, 55px); line-height: 1.03; letter-spacing: 0; font-weight: 500; margin: 0; }
+.heading em { font-family: 'Playfair Display', serif; font-weight: 500; color: #c76f44; }
+.introCopy { font-size: 13px; line-height: 1.8; color: #7b7a71; margin: 20px 0 29px; }
+.faceList { width: min(100%, 310px); min-width: 0; display: grid; }
+.faceTab { border: 0; border-top: 1px solid rgba(47,46,41,.13); padding: 10px 2px; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; text-align: left; background: transparent; color: #77766f; cursor: pointer; font-size: 12px; transition: color .2s, padding .2s; }
+.faceTab:last-child { border-bottom: 1px solid rgba(47,46,41,.13); }
+.faceTab:hover, .faceTab.isSelected { color: var(--ink); }
+.faceTab.isSelected { padding-left: 8px; }
+.faceTab.isSelected .faceIndex { color: var(--active-tint); }
+.faceIndex, .faceTabTime { font-family: var(--mono); font-size: 9px; color: #a5a39a; }
+.faceTabTime { text-align: right; }
+
+@media (max-width: 680px) {
+	.introBlock { width: 100%; align-self: stretch; padding-bottom: 0; }
+	.eyebrow { margin-bottom: 11px; }
+	.heading { font-size: 39px; }
+	.introCopy { margin: 13px 0 17px; font-size: 12px; }
+	.introCopy br { display: none; }
+	.faceList { display: flex; width: 100%; overflow-x: auto; scrollbar-width: none; gap: 7px; padding-bottom: 5px; }
+	.faceList::-webkit-scrollbar { display: none; }
+	.faceTab, .faceTab:last-child { flex: 0 0 auto; display: flex; gap: 7px; border: 1px solid rgba(47,46,41,.16); border-radius: 18px; padding: 8px 10px; font-size: 10px; white-space: nowrap; }
+	.faceTab.isSelected { padding-left: 10px; border-color: var(--active-tint); background: rgba(255,255,255,.38); }
+	.faceIndex, .faceTabTime { font-size: 8px; }
+}

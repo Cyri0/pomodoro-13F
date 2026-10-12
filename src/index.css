@@ -1,3 +1,36 @@
-:root{
-  
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
+:root {
+	font-family: 'DM Sans', sans-serif;
+	color: #252522;
+	background: #efeee9;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	--ink: #252522;
+	--muted: #8c8b82;
+	--mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	min-width: 320px;
+	min-height: 100vh;
+	background-color: #efeee9;
+	background-image: radial-gradient(ellipse at 70% 37%, rgba(255,255,255,.92) 0, rgba(255,255,255,.42) 26%, transparent 63%), linear-gradient(118deg, transparent 52%, rgba(231,218,196,.28) 52.1%, transparent 79%);
+}
+
+button, a { font: inherit; }
+button { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--active-tint, #ed7c45); outline-offset: 4px; }
+
+@keyframes rise-in {
+	from { opacity: 0; transform: translateY(11px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

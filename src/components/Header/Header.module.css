@@ -1,0 +1,21 @@
+.topbar {
+	height: 82px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid rgba(48, 47, 42, .12);
+	position: relative;
+	z-index: 2;
+}
+
+.wordmark { display: inline-flex; gap: 10px; align-items: center; text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 700; letter-spacing: 0; }
+.wordmarkMark { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid #272724; border-radius: 50%; font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; }
+.topbarNote { display: flex; align-items: center; gap: 9px; color: #727168; font-size: 12px; }
+.statusLight { width: 6px; height: 6px; background: #87a88a; border-radius: 50%; box-shadow: 0 0 0 3px rgba(135,168,138,.15); }
+.sessionCount { font-family: var(--mono); font-size: 11px; color: var(--ink); }
+.sessionCount span { color: #9a998f; }
+
+@media (max-width: 680px) {
+	.topbar { height: 66px; }
+	.topbarNote { font-size: 10px; }
+}
