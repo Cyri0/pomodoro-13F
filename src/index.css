@@ -1,3 +1,499 @@
-:root{
-  
+:root {
+  --bg-top: #f4ebdd;
+  --bg-bottom: #e6d5bd;
+  --ink: #2b2a28;
+  --ink-soft: #7a7266;
+  --label: #5f6566;
+  --shell: #fbfaf7;
+  --shell-edge: #ecebe6;
+  --screen: #0b0b0c;
+  --work: #ff7a1a;
+  --rest: #3ed6a0;
+  --tick-off: #1f1f21;
+
+  /* Cube edge: grows with the viewport, bounded so controls always fit below it. */
+  --s: clamp(160px, min(40svh, 62vw), 460px);
+  --half: calc(var(--s) / 2);
+
+  font-family: 'Archivo', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: radial-gradient(120% 80% at 30% 0%, #fbf5ea 0%, var(--bg-top) 60%);
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 5vh, 56px);
+  padding: 32px 16px 40px;
+  position: relative;
+  overflow: clip;
+}
+
+.brand {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-size: 15px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand b {
+  color: var(--ink);
+  font-weight: 800;
+}
+.brand .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--work);
+}
+
+/* ---------- 3D cube ---------- */
+
+.stage {
+  position: relative;
+  width: calc(var(--s) * 1.7);
+  height: calc(var(--s) * 1.45);
+  display: grid;
+  place-items: center;
+  /* Perspective proportional to the cube so it looks the same at every size. */
+  perspective: calc(var(--s) * 5.5);
+  perspective-origin: 50% 25%;
+}
+
+/* The table: its back edge sits behind the cube, so the horizon moves with it. */
+.stage::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 34%;
+  left: -100vw;
+  right: -100vw;
+  height: 200vh;
+  background: linear-gradient(180deg, transparent 0, var(--bg-bottom) calc(var(--s) * 0.18), #dcc8ac calc(var(--s) * 1.6));
+}
+
+.floor-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: calc(var(--s) * 1.25);
+  height: calc(var(--s) * 0.28);
+  margin-left: calc(var(--s) * -0.58);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(84, 58, 28, 0.38), rgba(84, 58, 28, 0.12) 60%, transparent);
+  filter: blur(6px);
+}
+
+.lift,
+.view {
+  transform-style: preserve-3d;
+  width: var(--s);
+  height: var(--s);
+}
+
+.view {
+  transform: rotateX(-20deg) rotateY(-30deg);
+}
+
+.cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.45, 0, 0.35, 1);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 11%;
+  background: linear-gradient(145deg, #ffffff 0%, var(--shell) 55%, var(--shell-edge) 100%);
+  backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.core {
+  --d: calc(var(--half) * 0.94);
+  position: absolute;
+  inset: 3%;
+  background: #eeede8;
+  backface-visibility: hidden;
+}
+
+.front { --r: translateZ(var(--d, var(--half))); }
+.back { --r: rotateY(180deg) translateZ(var(--d, var(--half))); }
+.top { --r: rotateX(90deg) translateZ(var(--d, var(--half))); }
+.bottom { --r: rotateX(-90deg) translateZ(var(--d, var(--half))); }
+.right { --r: rotateY(90deg) translateZ(var(--d, var(--half))); }
+.left { --r: rotateY(-90deg) translateZ(var(--d, var(--half))); }
+.face,
+.core {
+  transform: var(--r);
+}
+.face.front { cursor: pointer; }
+
+.face:not(.front):not(.back) {
+  cursor: pointer;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: #3b3326;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.45, 0, 0.35, 1);
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 0.82;
+  color: var(--label);
+}
+.label .num {
+  font-weight: 800;
+  font-size: calc(var(--s) * 0.42);
+  letter-spacing: -0.04em;
+}
+.label .min {
+  font-weight: 800;
+  font-size: calc(var(--s) * 0.075);
+  letter-spacing: 0.18em;
+  margin-top: calc(var(--s) * 0.04);
+}
+
+/* Front face: raised bezel → recessed well → black screen */
+.bezel {
+  position: absolute;
+  inset: 6%;
+  border-radius: 14%;
+  background: linear-gradient(160deg, #ffffff, #f2f1ec);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.035),
+    0 6px 14px rgba(0, 0, 0, 0.05),
+    inset 0 2px 0 rgba(255, 255, 255, 0.9);
+  display: grid;
+  place-items: center;
+}
+.well {
+  width: 86%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #eceae4, #fbfaf7);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.08);
+  display: grid;
+  place-items: center;
+}
+.upright {
+  width: 86%;
+  aspect-ratio: 1;
+  transition: transform 0.7s cubic-bezier(0.45, 0, 0.35, 1);
+}
+
+/* ---------- Display ---------- */
+
+.screen {
+  --accent: var(--work);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #1c1c1f 0%, var(--screen) 55%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 0 0 2px #000;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.screen.rest {
+  --accent: var(--rest);
+}
+.screen::after {
+  /* glass glare */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 38%);
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  inset: 3%;
+}
+.tick {
+  fill: var(--tick-off);
+  transition: fill 0.3s;
+}
+.tick.on {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent) 60%, transparent));
+}
+
+.digits {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--s) * 0.012);
+  height: 20%;
+}
+.digit {
+  height: 100%;
+  width: auto;
+}
+.seg {
+  fill: #fff;
+  opacity: 0.06;
+}
+.seg.on {
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.45));
+}
+.colon {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--s) * 0.035);
+  margin: 0 calc(var(--s) * 0.012);
+}
+.colon i {
+  width: calc(var(--s) * 0.018);
+  aspect-ratio: 1;
+  background: #fff;
+  border-radius: 1px;
+  opacity: 0.85;
+}
+.screen.running .colon i {
+  animation: blink 1s steps(1) infinite;
+}
+.screen.idle .colon i,
+.screen.paused .colon i {
+  opacity: 0.25;
+}
+.screen.paused .digits,
+.screen.done .digits {
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+  position: relative;
+  z-index: 1; /* above the table layer behind the cube */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(80, 60, 30, 0.08);
+}
+.chip {
+  border: 0;
+  background: transparent;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.chip small {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.chip:hover {
+  color: var(--ink);
+}
+.chip.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.actions button {
+  border: 0;
+  height: 48px;
+  border-radius: 999px;
+  transition: transform 0.15s, background 0.2s, opacity 0.2s;
+}
+.actions button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.primary {
+  min-width: 140px;
+  padding: 0 28px;
+  background: var(--work);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 20px rgba(255, 122, 26, 0.3);
+}
+.ghost {
+  min-width: 48px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(80, 60, 30, 0.1);
+}
+.ghost:hover:not(:disabled) {
+  background: #fff;
+}
+
+.sessions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(80, 60, 30, 0.15);
+  transition: background 0.3s;
+}
+.pip.on {
+  background: var(--work);
+}
+.count {
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.hint {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.9;
+  text-wrap: balance;
+}
+kbd {
+  font: inherit;
+  font-family: 'Archivo', 'Segoe UI Symbol', system-ui, sans-serif;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 -1px 0 rgba(80, 60, 30, 0.15);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--work);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cube,
+  .upright,
+  .shade {
+    transition-duration: 0.01s;
+  }
+}
+
+@media (max-width: 520px) {
+  .modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 22px;
+    width: 100%;
+  }
+  .chip {
+    justify-content: center;
+  }
+  .brand {
+    position: static;
+  }
+}
+
+/* Short landscape screens (small laptops, phones sideways): cube and controls side by side. */
+@media (orientation: landscape) and (max-height: 640px) and (min-width: 700px) {
+  :root {
+    --s: clamp(150px, 52svh, 360px);
+  }
+  .app {
+    flex-direction: row;
+    gap: clamp(24px, 6vw, 80px);
+  }
+  .controls {
+    width: auto;
+    max-width: 420px;
+  }
+}
+
+/* Big screens: give the controls a bit more presence to match the cube. */
+@media (min-width: 1200px) and (min-height: 860px) {
+  .controls {
+    zoom: 1.12;
+  }
+}
+
+/* Short phones in portrait. */
+@media (orientation: portrait) and (max-height: 700px) {
+  :root {
+    --s: clamp(150px, min(32svh, 62vw), 460px);
+  }
+  .app {
+    gap: 16px;
+    padding-top: 16px;
+  }
+  .hint {
+    display: none;
+  }
 }
