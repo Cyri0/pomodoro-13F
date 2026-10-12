@@ -1,3 +1,23 @@
-:root{
-  
+body{
+    display: grid;
+    place-content: center;
+    min-height: 80vh;
 }
+
+.container{
+    width: 250px;
+    height: 250px;
+    perspective: 1000px;
+}
+
+.buttonCtr{
+    margin-bottom: 300px;
+    button{
+        width: 50px;
+        height: 50px;
+
+
+    }
+
+}
+
