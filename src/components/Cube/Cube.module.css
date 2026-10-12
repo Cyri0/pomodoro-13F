@@ -1,0 +1,45 @@
+.cubeScene { width: 100%; height: 390px; display: grid; place-items: center; perspective: 1100px; perspective-origin: 50% 48%; position: relative; }
+.cubeShadow { position: absolute; width: 265px; height: 55px; left: 50%; bottom: 35px; transform: translateX(-50%) rotate(-8deg); background: rgba(69,58,43,.19); filter: blur(21px); border-radius: 50%; }
+.cube { --cube-size: 300px; width: var(--cube-size); height: var(--cube-size); position: relative; transform-style: preserve-3d; transition: transform .85s cubic-bezier(.2,.75,.22,1); }
+.cubeFace { position: absolute; inset: 0; width: 100%; height: 100%; padding: 19px 20px; border: 1px solid rgba(255,255,255,.95); border-radius: 30px; background: linear-gradient(145deg, #fffefa, #f5f3ed 78%, #ebe9e2); box-shadow: inset 2px 2px 5px rgba(255,255,255,.95), inset -7px -7px 15px rgba(174,170,159,.16), 0 13px 25px rgba(75,70,57,.12); backface-visibility: hidden; color: #3a3935; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; overflow: hidden; }
+.cubeFace::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(130,127,117,.09); border-radius: 25px; pointer-events: none; }
+.cubeFace.isCurrent { cursor: default; }
+.faceTopline, .faceBottomline { width: 100%; display: flex; justify-content: space-between; position: absolute; left: 0; padding: 0 25px; font-family: var(--mono); font-size: 7px; letter-spacing: .55px; color: #a5a197; }
+.faceTopline { top: 22px; }
+.faceBottomline { bottom: 21px; }
+.faceTopline span:last-child { color: var(--face-tint); }
+.dial { width: 202px; aspect-ratio: 1; padding: 9px; border-radius: 50%; display: grid; place-items: center; background: repeating-conic-gradient(from -90deg, var(--face-tint) 0deg 2deg, transparent 2deg 6deg); -webkit-mask: conic-gradient(from -90deg, #000 0 var(--dial-progress), transparent var(--dial-progress) 100%); mask: conic-gradient(from -90deg, #000 0 var(--dial-progress), transparent var(--dial-progress) 100%); filter: drop-shadow(0 4px 3px rgba(32,30,27,.13)); }
+.dialInner { width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 38% 28%, #282827, #131312 75%); display: flex; align-items: center; justify-content: center; flex-direction: column; color: #f4f2ec; box-shadow: inset 0 2px 8px rgba(0,0,0,.5), 0 0 0 2px #242321; }
+.dialLabel { font-family: var(--mono); font-size: 7px; letter-spacing: .8px; color: #aaa9a2; margin-bottom: 13px; }
+.digitalTime { font-family: var(--mono); font-size: 41px; font-weight: 400; letter-spacing: 0; line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 0 13px rgba(255,255,255,.2); }
+.dialState { font-family: var(--mono); font-size: 7px; letter-spacing: .75px; color: var(--face-tint); margin-top: 13px; }
+.cubeStud { position: absolute; width: 5px; height: 5px; background: #d9d7d0; border-radius: 50%; box-shadow: inset 1px 1px 1px white, 0 1px 2px rgba(0,0,0,.12); }
+.studOne { top: 13px; left: 50%; }.studTwo { bottom: 13px; left: 50%; }.studThree { top: 50%; left: 13px; }.studFour { top: 50%; right: 13px; }
+
+@media (max-width: 900px) {
+	.cubeScene { height: 350px; }
+	.cube { --cube-size: 270px; }
+	.cubeFace { padding: 17px; border-radius: 27px; }
+	.cubeFace::before { border-radius: 22px; }
+	.dial { width: 188px; }
+	.digitalTime { font-size: 37px; }
+}
+
+@media (max-width: 680px) {
+	.cubeScene { height: min(84vw, 345px); }
+	.cube { --cube-size: min(70vw, 285px); }
+	.cubeFace { padding: 15px; border-radius: 26px; }
+	.cubeFace::before { border-radius: 21px; }
+	.dial { width: 68%; padding: 8px; }
+	.digitalTime { font-size: clamp(31px, 10vw, 39px); }
+	.faceTopline, .faceBottomline { padding: 0 20px; font-size: 6px; }
+	.faceTopline { top: 19px; }.faceBottomline { bottom: 18px; }
+	.cubeShadow { width: 68%; bottom: 19px; }
+}
+
+@media (max-width: 380px) {
+	.cubeScene { height: 300px; }
+	.cube { --cube-size: 250px; }
+	.dial { width: 66%; }
+	.digitalTime { font-size: 32px; }
+}
