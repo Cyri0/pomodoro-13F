@@ -31,6 +31,7 @@ const rotateVector = (vector: { x: number; y: number; z: number }, rotationX: nu
   const sinX = Math.sin(rx)
   const y2 = vector.y * cosX - z1 * sinX
   const z2 = vector.y * sinX + z1 * cosX
+  //ezt az egesz kodot az ai irta es en csak bemasolom, hogy mukodjon a 3d kocka, de nem ertem a matekot benne. btw meleg vagyok
 
   return { x: x1, y: y2, z: z2 }
 }
