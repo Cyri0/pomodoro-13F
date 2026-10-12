@@ -1,0 +1,178 @@
+@font-face {
+    font-family: 'DSEG7';
+    src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
+.pc-scene {
+    --anim: 0.2s;
+
+    --wood:
+        repeating-linear-gradient(90deg,
+            transparent 0 3px, rgba(55, 28, 10, 0.2) 3px 4px,
+            transparent 4px 9px, rgba(255, 220, 170, 0.07) 9px 10px),
+        repeating-linear-gradient(91deg,
+            transparent 0 26px, rgba(40, 20, 5, 0.14) 26px 29px),
+        linear-gradient(160deg, #94623f, #6a4027 60%, #583420);
+
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    perspective: 1200px;
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+}
+
+.pc-scene.dragging {
+    cursor: grabbing;
+}
+
+.pc-tilt,
+.pc-cube {
+    --s: 260px;
+    width: var(--s);
+    height: var(--s);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.pc-tilt {
+    transform: rotateX(-35deg);
+}
+
+.pc-face {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    background: var(--wood);
+    color: #fff4e0;
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 235, 205, 0.18),
+        inset 0 0 28px rgba(0, 0, 0, 0.35);
+    transition: filter var(--anim) ease-out;
+}
+
+.pc-front {
+    transform: translateZ(calc(var(--s) / 2));
+    border: 12px solid transparent;
+    background:
+        linear-gradient(155deg, #2b2b2e 0%, #141416 55%, #0a0a0b 100%) padding-box,
+        var(--wood) border-box;
+    box-shadow:
+        inset 0 0 22px rgba(0, 0, 0, 0.8),
+        inset 0 2px 0 rgba(255, 255, 255, 0.05);
+}
+
+.pc-front-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.pc-back {
+    background: var(--wood);
+    filter: brightness(0.7);
+}
+
+.pc-side {
+    line-height: 1;
+    gap: 4px;
+}
+
+.pc-side::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 65%);
+    z-index: 0;
+}
+
+.pc-side>* {
+    position: relative;
+    z-index: 1;
+}
+
+.pc-side.selected {
+    filter: brightness(1.2);
+}
+
+.pc-number,
+.pc-unit {
+    color: #fff4e0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 2px #000;
+}
+
+.pc-number {
+    font-size: 84px;
+    font-weight: 800;
+}
+
+.pc-unit {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.pc-time {
+    font-family: 'DSEG7', 'Courier New', monospace;
+    font-size: 54px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: white;
+    text-shadow: 0 0 6px rgba(192, 192, 192, 0.8), 0 0 18px rgba(105, 105, 105, 0.45);
+    transition: opacity var(--anim) ease-out, color var(--anim) ease-out;
+}
+
+.pc-time.paused {
+    opacity: 0.55;
+}
+
+.pc-time.done {
+    animation: pc-blink 0.8s infinite;
+}
+
+@keyframes pc-blink {
+    50% {
+        opacity: 0.2;
+    }
+}
+
+.pc-button {
+    padding: 9px 26px;
+    border: none;
+    border-radius: 999px;
+    background: #fff;
+    color: black;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+    transition: transform var(--anim) ease-out, box-shadow var(--anim) ease-out,
+        background var(--anim) ease-out, color var(--anim) ease-out;
+}
+
+.pc-button:hover {
+    transform: translateY(-1px);
+}
+
+.pc-button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+.pc-button.running {
+    background: #ffe9a8;
+    color: #8a5a00;
+}
