@@ -1,6 +1,13 @@
+import Cube from "./components/Cube"
+
 const App = () => {
   return (
-    <div>App</div>
+    <>
+    <div className="container">
+      <Cube/>
+    </div>
+    </>
+    
   )
 }
 

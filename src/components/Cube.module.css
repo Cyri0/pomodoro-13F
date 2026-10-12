@@ -1,0 +1,70 @@
+.cube{
+
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transform-style: preserve-3d;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+.cube:active{
+    cursor: grabbing;
+}
+
+.side{
+    position: absolute;
+    width: 290px;
+    height: 290px;
+    background-color: rgb(90, 89, 89);
+    text-align: center;
+    border: 5px dashed black;
+    color: white;
+    font-size: 3rem;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+
+.harminc{
+    transform:  translateZ(150px);
+}
+
+.hatvan{
+    transform: rotateY(180deg) translateZ(150px);
+}
+.tiz{
+    transform: rotateX(180deg) rotateY(90deg) translateZ(150px);
+}
+.husz{
+    transform:  rotateY(90deg) translateZ(-150px);
+}
+
+.ot{
+    transform:  rotateX(90deg) translateZ(-150px);
+}
+.negyvenot{
+    transform:  rotateX(90deg) translateZ(150px);
+}
+
+
+/* háhá ezt a kommentet én írom */
+
+
+
+.active{
+    background-color: blue;
+    animation: activePulse 1.2s ease-in-out infinite alternate;
+}
+
+
+@keyframes activePulse{
+    from{
+        box-shadow: inset 0 0 0 0 rgba(255, 255, 255, 0.15);
+    }
+    to{
+        box-shadow: inset 0 0 0 12px rgba(255, 255, 255, 0.45);
+    }
+}
