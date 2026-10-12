@@ -1,15 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap');
 
 :root {
 	font-family: 'Manrope', sans-serif;
-	color: #19392f;
-	background: #f0f1e8;
+	color: #292824;
+	background: #eeece5;
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-optical-sizing: auto;
 	font-weight: 500;
+	--shell: #f6f5f0;
+	--shell-shadow: rgba(70, 61, 49, .16);
+	--screen: #111210;
+	--screen-ink: #f6f3e9;
 	--cube-size: clamp(252px, 40vw, 350px);
 	--half-cube: calc(var(--cube-size) / 2);
 }
@@ -35,11 +39,9 @@ button { font: inherit; }
 	gap: 0;
 	overflow: hidden;
 	padding: 56px 24px 72px;
-	background-image:
-		radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, .76), transparent 46%),
-		linear-gradient(rgba(25, 57, 47, .035) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(25, 57, 47, .035) 1px, transparent 1px);
-	background-size: auto, 48px 48px, 48px 48px;
+	background:
+		radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, .92), transparent 54%),
+		linear-gradient(180deg, #f4f4f1 0 68%, #e9e3d8 68.2% 100%);
 }
 
 .scene {
@@ -64,9 +66,9 @@ button { font: inherit; }
 	left: 11%;
 	bottom: -25%;
 	border-radius: 50%;
-	background: rgba(36, 57, 45, .19);
-	filter: blur(22px);
-	transform: rotate(-8deg);
+	background: rgba(49, 42, 34, .24);
+	filter: blur(25px);
+	transform: rotate(-4deg);
 }
 
 .cube {
@@ -87,28 +89,38 @@ button { font: inherit; }
 	justify-content: space-between;
 	overflow: hidden;
 	padding: 25px 27px 27px;
-	border: 1px solid rgba(25, 57, 47, .14);
+	border: 1px solid rgba(64, 59, 51, .13);
+	border-radius: 20px;
 	backface-visibility: hidden;
-	color: #19392f;
-	box-shadow: inset 0 0 40px rgba(255, 255, 255, .14);
+	color: #292824;
+	background: linear-gradient(145deg, #fcfbf8 0%, #f0efe9 100%);
+	box-shadow:
+		inset 0 2px 3px rgba(255, 255, 255, .96),
+		inset 0 -5px 12px rgba(70, 61, 49, .09),
+		0 5px 12px rgba(70, 61, 49, .07);
 }
 
-.face-focus { transform: translateZ(var(--half-cube)); background: #ef7154; }
-.face-short-break { transform: rotateY(90deg) translateZ(var(--half-cube)); background: #c8e0c2; }
-.face-long-break { transform: rotateY(180deg) translateZ(var(--half-cube)); background: #e1e57a; }
-.face-deep-work { transform: rotateY(-90deg) translateZ(var(--half-cube)); background: #a7bddd; }
-.face-reset { transform: rotateX(90deg) translateZ(var(--half-cube)); background: #e9b7a9; }
-.face-sprint { transform: rotateX(-90deg) translateZ(var(--half-cube)); background: #d6c5e1; }
+.face-focus { --face-accent: #e78643; transform: translateZ(var(--half-cube)); }
+.face-short-break { --face-accent: #d98768; transform: rotateY(90deg) translateZ(var(--half-cube)); }
+.face-long-break { --face-accent: #8f9a82; transform: rotateY(180deg) translateZ(var(--half-cube)); }
+.face-deep-work { --face-accent: #c86f51; transform: rotateY(-90deg) translateZ(var(--half-cube)); }
+.face-reset { --face-accent: #ce9957; transform: rotateX(90deg) translateZ(var(--half-cube)); }
+.face-sprint { --face-accent: #d56654; transform: rotateX(-90deg) translateZ(var(--half-cube)); }
 
 .face-index,
 .face-note { font-family: 'DM Mono', monospace; text-transform: uppercase; }
-.face-index { display: flex; align-items: center; gap: 9px; font-size: 10px; letter-spacing: .12em; }
+.face-index { display: flex; align-items: center; gap: 9px; color: #79756e; font-size: 10px; letter-spacing: .12em; }
 .face-index span { opacity: .48; }
-.face-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; margin: auto 0; padding-top: 16px; }
-.face-name { font-size: clamp(17px, 2vw, 22px); font-weight: 700; line-height: 1.2; }
-.face-time { margin: 2px 0 5px -4px; font-size: clamp(54px, 9vw, 78px); font-weight: 600; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums; }
-.face-note { max-width: 205px; font-size: 9px; line-height: 1.6; letter-spacing: .07em; opacity: .72; }
-.face-mark { position: absolute; right: 25px; bottom: 17px; font-size: 23px; line-height: 1; }
+.face-copy { display: flex; flex-direction: column; align-items: center; gap: 9px; width: 100%; margin: auto 0; padding-top: 6px; text-align: center; }
+.face-name { color: #716d66; font-size: 11px; font-weight: 700; line-height: 1.2; text-transform: uppercase; letter-spacing: .08em; }
+.timer-display { position: relative; display: grid; place-items: center; width: min(70%, 210px); aspect-ratio: 1; margin: 3px 0 1px; }
+.timer-ring { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from -90deg, var(--face-accent) 0 var(--timer-progress), #d3d0c8 var(--timer-progress) 100%); box-shadow: 0 3px 8px rgba(47, 40, 31, .16); }
+.timer-ring::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: repeating-conic-gradient(from -90deg, rgba(250, 248, 242, .92) 0 1deg, transparent 1deg 6deg); mask: radial-gradient(transparent calc(100% - 4px), #000 calc(100% - 3px)); }
+.timer-screen { position: absolute; inset: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 50%; background: radial-gradient(circle at 34% 25%, #2a2b28 0%, #151613 56%, #0d0e0c 100%); box-shadow: inset 0 3px 12px rgba(255, 255, 255, .07), inset 0 -7px 14px rgba(0, 0, 0, .45); }
+.face-time { color: var(--screen-ink); font-family: 'Share Tech Mono', 'DM Mono', monospace; font-size: clamp(36px, 2.8rem, 48px); font-weight: 400; line-height: 1; letter-spacing: 0; font-variant-numeric: tabular-nums; text-shadow: 0 0 13px rgba(255, 244, 221, .22); }
+.pause-symbol { color: var(--face-accent); font-family: 'Share Tech Mono', monospace; font-size: 48px; line-height: .9; }
+.pause-label { color: #aba89f; font-family: 'DM Mono', monospace; font-size: 9px; }
+.face-note { max-width: 205px; color: #807b73; font-size: 9px; line-height: 1.55; letter-spacing: .04em; }
 
 @keyframes arrive {
 	from { opacity: 0; transform: translateY(14px); }
@@ -119,5 +131,6 @@ button { font: inherit; }
 	:root { --cube-size: min(74vw, 320px); }
 	.timer-app { gap: 0; padding: 48px 20px 64px; }
 	.cube-face { padding: 21px 22px 24px; }
-	.face-time { font-size: clamp(51px, 15vw, 68px); }
+	.timer-display { width: min(70%, 190px); }
+	.face-time { font-size: 38px; }
 }
